@@ -1,235 +1,324 @@
-# Ripple
+<div align="center">
 
-> **On-Call Autonomous Agent Crew with FalkorDB Brain**  
-> *Graph Hacks: Context for AI Agents (WeMakeDevs x FalkorDB)* · Solo build
+<img src="ripple-screenshots/github-banner/image.png" alt="Ripple: Reliability Intelligence Banner" width="100%" />
 
-Ripple is an on-call agent crew that uses **FalkorDB** as its brain. It follows real service dependencies to find the blast radius, forms competing hypotheses and ranks them with supporting and contradicting evidence, remembers every incident *and whether the fix actually worked*, coordinates through a shared graph, answers "what if X had failed instead?", and shows the exact subgraph path, nodes, and Cypher behind every answer.
+<br/><br/>
+
+<table>
+  <tr>
+    <td width="130" align="center" valign="middle">
+      <img src="ripple-screenshots/logo/image.png" alt="Ripple Logo" width="110" />
+    </td>
+    <td valign="middle">
+      <h1 style="margin: 0; padding: 0; border: none;">Ripple</h1>
+      <p style="margin: 4px 0 0 0; font-size: 1.15rem; color: #a1a1aa;">
+        <strong>Autonomous Reliability Intelligence & On-Call Agent Crew with FalkorDB Brain</strong><br/>
+        <em>Investigate · Understand · Resolve · Prevent</em>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<br/>
+
+[![FalkorDB](https://img.shields.io/badge/FalkorDB-Graph_Engine-FF4D2D?style=for-the-badge&logo=redis&logoColor=white)](https://www.falkordb.com/)
+[![MCP 2.0](https://img.shields.io/badge/MCP-Model_Context_Protocol-6366F1?style=for-the-badge&logo=anthropic&logoColor=white)](https://modelcontextprotocol.io/)
+[![NVIDIA Nemotron](https://img.shields.io/badge/NVIDIA-Nemotron_LLM-76B900?style=for-the-badge&logo=nvidia&logoColor=white)](https://build.nvidia.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Python_3.11-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React 3D](https://img.shields.io/badge/React_Vite-3D_Force_Graph-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://vitejs.dev/)
+[![License MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+
+<br/>
+
+**[🌐 Live Production Console](https://ripple-sre.vercel.app)** · **[🎬 YouTube Video Walkthrough](https://www.youtube.com/watch?v=JS9vzPhBy4g)** · **[📖 System Architecture](docs/architecture.md)** · **[🎯 Track Mapping](docs/track-mapping.md)** · **[📊 Benchmark Report](docs/benchmark-report.md)**
 
 ---
 
-## 🌐 Live Deployments & Quick Links
+</div>
 
-| Service | Environment | URL | Description |
+## 🏆 Hackathon Details & Track Alignment
+
+> **Graph Hacks: Context for AI Agents**  
+> Organized by **WeMakeDevs x FalkorDB** · *October 15 – 18, 2026* · **Solo Build**  
+> **YouTube Submission Video:** [https://www.youtube.com/watch?v=JS9vzPhBy4g](https://www.youtube.com/watch?v=JS9vzPhBy4g)  
+> **Production Deployment:** [https://ripple-sre.vercel.app](https://ripple-sre.vercel.app)
+
+Ripple was engineered specifically to answer the core challenge of the hackathon: **giving AI agents deep, living, and verifiable graph context**. It provides comprehensive, grounded solutions across all three hackathon tracks:
+
+| Track | Hackathon Requirement | How Ripple Solves It with FalkorDB | Modules |
 |---|---|---|---|
-| **Production Web UI** | Vercel (Primary) | **[https://ripple-sre.vercel.app](https://ripple-sre.vercel.app)** | Real-time Orange SRE On-Call Web Console |
-| **Mirror 1** | Vercel | **[https://ripple-intelligence.vercel.app](https://ripple-intelligence.vercel.app)** | High-availability production mirror |
-| **Mirror 2** | Vercel | **[https://ripple-oncall.vercel.app](https://ripple-oncall.vercel.app)** | Live backup web domain |
-| **Local Web UI** | Local Docker / Vite | **[http://localhost:5173](http://localhost:5173)** | Local reactive developer dashboard |
-| **FastAPI Swagger Docs**| Local Backend | **[http://localhost:8000/docs](http://localhost:8000/docs)** | Interactive OpenAPI test console |
-| **Backend Health Check**| Local / Cloud | **[http://localhost:8000/api/health](http://localhost:8000/api/health)** | Graph & service connectivity status |
-| **FalkorDB Visualizer** | Local Engine | **[http://localhost:3000](http://localhost:3000)** | Graph topology and Cypher query explorer |
-| **Prometheus Telemetry**| Local Monitor | **[http://localhost:9090](http://localhost:9090)** | Live service metrics & alerts |
-| **Alertmanager UI** | Local Monitor | **[http://localhost:9093](http://localhost:9093)** | Alert routing and dispatch console |
-| **Demo Repository** | GitHub | **[Vishallakshmikanthan/ripple-demo-repo](https://github.com/Vishallakshmikanthan/ripple-demo-repo)** | Monitored repo with live PRs and deployments |
+| **Track 1: Multi-Hop Reasoning & Graph Tools** | Agents must traverse complex relationships and execute graph algorithms. | Ripple traverses multi-hop dependency chains up to 5 hops, computes PageRank criticality ranking, calculates causal blast radii, and exposes **11 native Model Context Protocol (MCP)** tools. | `M4`, `M5`, `M9`, `M11` |
+| **Track 2: Memory & Multi-Agent Coordination** | Persistent memory across sessions, separate tenancy, and shared multi-agent state. | Multi-tier memory engine (**Episodic, Semantic, Procedural, and Outcome Memory**), graph-backed blackboard coordination between 4 agents, strict per-tenant FalkorDB graph isolation, and idempotent concurrent writes. | `M1`, `M6`, `M7`, `M13` |
+| **Track 3: Enterprise Knowledge Graph & Lineage** | Ingest docs, tickets, PRs, and map ownership, expertise, and decision lineage. | Graph links microservices to GitHub PRs, commits, Architecture Decision Records (ADRs), and documentation; calculates recency-weighted engineer expertise; flags stale documentation; and ensures 100% cited answers. | `M2`, `M8`, `M10`, `M12` |
 
 ---
 
-## ⚡ Quick Start & Run Guide
+## 💥 The Problem: 3 AM On-Call Chaos
 
-You can run Ripple either using **Docker Compose** (all-in-one stack) or directly in the cloud.
+Modern cloud applications consist of hundreds of interdependent microservices, databases, caches, and third-party APIs. When an incident strikes in production:
 
-### Option A: All-in-One via Docker Compose (Recommended)
-
-```bash
-# 1. Clone repository & enter directory
-git clone https://github.com/Vishallakshmikanthan/ripple.git
-cd ripple
-
-# 2. Configure environment file
-cp .env.example .env
-# Edit .env with your keys (see Credentials Guide below)
-
-# 3. Start all services
-docker compose up -d --build
-
-# 4. Access the applications
-# Web UI:            http://localhost:5173
-# FalkorDB Browser:  http://localhost:3000
-# FastAPI Docs:      http://localhost:8000/docs
-# Health Check:      http://localhost:8000/api/health
-```
-
-### Option B: Cloud Hosting (Vercel Frontend + Render Backend)
-
-#### 1. Frontend on Vercel
-The frontend is already configured with automated SPA rewrites and API proxies in [`frontend/vercel.json`](frontend/vercel.json):
-```bash
-cd frontend
-npm install
-npx vercel --prod
-```
-Domains configured:
-- `https://ripple-sre.vercel.app`
-- `https://ripple-intelligence.vercel.app`
-- `https://ripple-oncall.vercel.app`
-
-#### 2. Backend & FalkorDB on Render (Free Tier Blueprint)
-Ripple provides a standalone container configuration [`Dockerfile.standalone`](Dockerfile.standalone) that runs FalkorDB graph database and the FastAPI backend together inside a single Render web service:
-```bash
-# Validate and deploy blueprint using Render CLI
-render blueprints validate ./render.yaml
-render blueprints apply ./render.yaml
-```
+1. **Cascading Failures Cause Alert Storms:** A single bottleneck in a deep database triggers secondary failures across dozens of upstream caller services. SREs drown in noise trying to distinguish the *root cause* from *downstream symptoms*.
+2. **Standard LLMs Hallucinate Without Topology:** Traditional LLM on-call chatbots lack architectural context. They do not know which service calls which, what protocols are used, or how hop distances affect latency.
+3. **Vector Databases Fall into the "Stale-Fix Trap":** Vector similarity search retrieves past post-mortems based purely on semantic text matching. If an incident occurred 3 weeks ago on `cartservice` and the fix was `flush the Redis cache`, a vector database will blindly recommend flushing Redis — completely unaware that engineering decoupled Redis 24 hours ago. Executing this stale fix causes accidental data loss and exacerbates the outage!
+4. **Black-Box AI Cannot Be Trusted with Production Actions:** SREs cannot risk running remediation actions generated by opaque models. AI recommendations must be 100% explainable, verifiable, and protected by safe-action operational gates.
 
 ---
 
-## 🚀 How to Run the Agent Crew
+## 💡 The Solution: Ripple with FalkorDB Brain
 
-### 1. In the Web UI (1-Click)
-1. Open **[https://ripple-sre.vercel.app](https://ripple-sre.vercel.app)** or `http://localhost:5173`.
-2. In the top bar, pick a scenario from the dropdown (e.g. *Stale-Fix Trap: Cart Service Decoupled from Redis* or *Misleading-Memory: Checkout Latency*).
-3. Click **"Run Agent Crew"** (top right button or inside the Alert Console).
-4. Watch in real-time as:
-   - The **Triage Agent** ingests the alert and queries the FalkorDB topology.
-   - The **Investigator Agent** generates competing hypotheses, ranks supporting vs. contradicting evidence, queries GitHub deployments, and checks metrics.
-   - The **Responder Agent** evaluates historical runbook success rates, validates against the current graph topology, and proposes safe actions.
-   - The **Verifier Agent** tests the outcome and posts automated status updates to your Slack webhook!
-
-### 2. Via Command Line / API
-```bash
-curl -X POST "http://localhost:8000/api/incidents" \
-  -H "Content-Type: application/json" \
-  -H "X-Tenant: storefront" \
-  -H "Authorization: Bearer ripple_admin_api_key_2026" \
-  -d '{
-    "alert": {
-      "service": "cartservice",
-      "text": "cartservice high latency on session lookup",
-      "severity": "HIGH"
-    },
-    "mode": "autonomous",
-    "auto_approve": false,
-    "sync": false
-  }'
-```
-
----
-
-## 🔑 Required Credentials & Configuration
-
-Configure these values in your `.env` file or input them in the **Integrations** tab in the UI:
-
-### 1. API Keys & Authentication
-- **Default Admin Key:** `ripple_admin_api_key_2026`
-- **Tenant Header:** `X-Tenant: storefront` (or `X-Tenant: tenant_payments`)
-- **Dev Mode:** Set `AUTH_DEV_MODE=true` in `.env` to automatically authenticate local UI and development requests.
-
-### 2. LLM Provider API Key (Live Agent Crew)
-Set at least one in `.env`:
-- **NVIDIA NIM / Nemotron:** `NVIDIA_API_KEY=nvapi-...` *(Tested with `nvidia/nemotron-4-340b-instruct` / `meta/llama-3.1-70b-instruct`)*
-- **Google Gemini:** `GEMINI_API_KEY=AIzaSy...`
-- **OpenAI:** `OPENAI_API_KEY=sk-...`
-- **Anthropic:** `ANTHROPIC_API_KEY=sk-ant-...`
-
-### 3. Slack Webhook URL (`SLACK_WEBHOOK_URL`)
-- Incoming Webhook URL to receive live incident alerts and agent execution receipts.
-- Create an app on [Slack API: Your Apps](https://api.slack.com/apps), enable Incoming Webhooks, and paste the URL in `.env`.
-
-### 4. GitHub Token & Monitored Repo (`GITHUB_TOKEN` & `GITHUB_REPO`)
-- `GITHUB_REPO=Vishallakshmikanthan/ripple-demo-repo`
-- Generate a token at [GitHub Settings -> Personal Access Tokens](https://github.com/settings/tokens) with `repo` and `workflow` scopes.
-
-### 5. Prometheus Telemetry (`PROMETHEUS_URL`)
-- Default bundled Docker Prometheus runs on `http://localhost:9090`.
-- In offline or standalone mode, Ripple automatically runs its built-in traffic simulator and demo target exporter (`http://localhost:8000/metrics`).
-
----
-
-## 🏗️ Architecture Overview
+**Ripple** is an autonomous on-call agent crew that uses **FalkorDB** as its living cognitive brain.
 
 ```
-                 ┌────────────────────────────────────────────┐
-                 │  React UI (Vite + TypeScript)              │
-                 │  https://ripple-sre.vercel.app             │
-                 │  alert console · agent timeline · graph    │
-                 │  hypothesis board · memory panel ·         │
-                 │  counterfactual overlay · benchmark tab    │
-                 └──────────────────┬─────────────────────────┘
-                                    │ REST + SSE (live events)
-                 ┌──────────────────▼─────────────────────────┐
-                 │  FastAPI Backend (Port 8000)               │
-                 │  tenant middleware · orchestrator · tools  │
-                 └──┬───────┬────────┬────────┬────────┬──────┘
-                    │       │        │        │        │
-           ┌────────▼──┐ ┌──▼─────┐ ┌▼───────┐ ┌▼──────┐ ┌▼────────────┐
-           │Orchestrator│ │Hypothe-│ │Brain   │ │Counter│ │Scenario     │
-           │+ 3 agents  │ │sis &   │ │Q&A     │ │factual│ │simulator +  │
-           │+ blackboard│ │evidence│ │(Trk 3) │ │engine │ │ingestion    │
-           └─────┬──────┘ └──┬─────┘ └┬───────┘ └┬──────┘ └┬────────────┘
-                 │ tool calls│        │          │         │
-           ┌─────▼───────────▼────────▼──────────▼─────────▼──────┐
-           │  Graph Tool Library + Memory Layer                   │
-           │  (every call emits a provenance trace)               │
-           └───────────────────────────┬──────────────────────────┘
-                                       │ Cypher
-                 ┌────────────────────▼───────────────────┐
-                 │  FalkorDB (Ports 6379 & 3000)          │
-                 │  Isolated graph per tenant:            │
-                 │  tenant_storefront · tenant_payments   │
-                 └─────────────────────────────────────────┘
+       Alert Ingestion ──▶ Triage Agent ──▶ Investigator Agent ──▶ Responder Agent ──▶ Verifier Agent
+             │                   │                     │                     │                  │
+             ▼                   ▼                     ▼                     ▼                  ▼
+      ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+      │                        FalkorDB Graph Brain & Living Blackboard                             │
+      │   • Service Topology (13 nodes, 17 edges)      • Temporal "As-Of" Time Travel Traversal      │
+      │   • Competing Hypotheses & Evidence Engine     • Episodic, Semantic & Procedural Memory      │
+      │   • Stale-Fix Topology Applicability Gating   • Recency-Weighted Code Expertise & Ownership │
+      └─────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Graph-Guided Root Cause Analysis:** Rather than guessing, Ripple traverses the live topology in FalkorDB, ranking competing hypotheses using mathematical evidence scoring with supporting and contradicting proof.
+- **Outcome-Driven Memory & Stale-Fix Protection:** Ripple remembers every past incident *and whether the fix actually worked*. Before recommending any runbook, it mathematically validates the runbook's architectural assumptions against the active FalkorDB graph topology. If an assumed edge was severed, the fix is **explicitly rejected with topological proof**.
+- **Shared Graph Blackboard Coordination:** Four specialized agents (**Triage**, **Investigator**, **Responder**, **Verifier**) collaborate through a graph-native blackboard. They hand off tasks, flag conflicts, and request evidence dynamically.
+- **Universal Context via MCP:** All 11 graph reasoning tools are published through an official **Model Context Protocol (MCP 2.0)** server, allowing external agents in Cursor, Claude Desktop, or Antigravity to plug directly into the FalkorDB brain.
+
+---
+
+## 📸 Product Screenshots & Visual Walkthrough
+
+Ripple features a mission-critical, high-density SRE console designed in dark glassmorphism with high-contrast amber/orange accents. Below are live captures of the production platform in action:
+
+---
+
+### 1. Main Incident Investigation & 2D System Topology Console
+<div align="center">
+  <img src="ripple-screenshots/Screenshot 2026-10-18 214738.png" alt="Main Incident Investigation Console" width="100%" />
+</div>
+
+> **Figure 1:** The unified SRE command center. Shows the active incident (`Checkout payment authorization failing`), live status badges, active causal blast radius, real-time Server-Sent Events (SSE) agent timeline, trace waterfall breakdown, and the Ranked Hypotheses & Evidence Engine powered by FalkorDB.
+
+---
+
+### 2. Interactive 3D Causal Topology & Real-Time Traffic Flow
+<div align="center">
+  <img src="ripple-screenshots/Screenshot 2026-10-18 214808.png" alt="3D Causal Topology Visualizer" width="100%" />
+</div>
+
+> **Figure 2:** Interactive Three.js 3D Force-Directed Graph visualization. Displays particle traffic streams, dynamic latency badges (e.g. `320ms`, `500s 68% error rate`), incoming caller vectors, and a detailed telemetry card for `frontend` showing p99 latency (`45ms`), error rate (`0.01%`), and throughput (`280 tps`).
+
+---
+
+### 3. Deep Service Node Inspection & Cypher Provenance
+<div align="center">
+  <img src="ripple-screenshots/Screenshot 2026-10-18 214822.png" alt="Deep Service Node Inspection" width="100%" />
+</div>
+
+> **Figure 3:** Focusing on the critical hotspot `paymentservice`. Highlights failing status (`500s · 68% error rate`, `2.5s p99 latency`, `420 req/s`), incoming dependencies from `checkoutservice`, and provides 1-click access to filter the investigation timeline or inspect Cypher provenance.
+
+---
+
+### 4. Agent Activity Timeline & Inspectable Cypher Execution Traces
+<div align="center">
+  <img src="ripple-screenshots/Screenshot 2026-10-18 214852.png" alt="Agent Activity Timeline & Cypher Traces" width="100%" />
+</div>
+
+> **Figure 4:** 100% explainability. The timeline reveals the exact Cypher queries executed against FalkorDB (e.g., `MATCH (s:Service {name: 'paymentservice'})-[:DEPENDS_ON*1..3]->(d) RETURN d.name, d.type, d.criticality`), PageRank impact calculations, similar incident retrieval, and competing hypotheses ranked with evidence scores.
+
+---
+
+### 5. Enterprise Service Catalog & Health Matrix (List View)
+<div align="center">
+  <img src="ripple-screenshots/Screenshot 2026-10-18 214906.png" alt="Enterprise Service Catalog" width="100%" />
+</div>
+
+> **Figure 5:** Comprehensive Service Matrix view across 13 services and 17 dependencies. Shows real-time health indicators, tier classification (`tier-1`, `tier-2`, `tier-3`), and upstream/downstream connection counts for rapid dependency auditing.
+
+---
+
+### 6. Episodic & Procedural Memory Recall (Stale Runbook Analysis)
+<div align="center">
+  <img src="ripple-screenshots/Screenshot 2026-10-18 214915.png" alt="Episodic & Procedural Memory Recall" width="100%" />
+</div>
+
+> **Figure 6:** FalkorDB memory recall in action. Retrieves similar historical incident `INC-3127 Paymentservice DB connection pool exhaustion` with a 92% symptom match, correlates past runbook `Increase DB connection pool size` (86% historical success rate), and evaluates current architectural applicability.
+
+---
+
+### 7. Operational Approval Gate & Safe-Action Safeguard
+<div align="center">
+  <img src="ripple-screenshots/Screenshot 2026-10-18 214931.png" alt="Operational Approval Gate" width="100%" />
+</div>
+
+> **Figure 7:** Human-in-the-Loop Safe Action Gate. While reversible actions (e.g., status drafts, paging on-call engineers) execute autonomously, potentially destructive actions (e.g., `rb_rollback` deployment rollback) are halted at an operational approval gate requiring explicit operator confirmation before execution.
+
+---
+
+### 8. Counterfactual (What-If) Simulation Engine
+<div align="center">
+  <img src="ripple-screenshots/Screenshot 2026-10-18 214946.png" alt="Counterfactual What-If Simulation" width="100%" />
+</div>
+
+> **Figure 8:** Predictive multi-hop reliability analysis (`M9`). Allows operators to simulate hypothetical alternative failures (e.g., *"What if checkoutservice had failed instead?"*). FalkorDB instantly computes the Venn delta: Observed Only, Both Impacted, and Hypothetical Only, while calculating PageRank critical service owners.
+
+---
+
+### 9. Pre-Registered Scientific Benchmark & Calibration Dashboard
+<div align="center">
+  <img src="ripple-screenshots/Screenshot 2026-10-18 214956.png" alt="Benchmark & Calibration Console" width="100%" />
+</div>
+
+> **Figure 9:** Empirical proof under Protocol v2.0 across 78 scenario evaluations. Demonstrates that enabling FalkorDB graph memory increased recommendation accuracy from 31% to 38% (+7 pts) and slashed unsafe recommendations from 8% to 0% (+8 pts) across Repeated, Variant, Novel, and Stale-Trap incident families.
+
+---
+
+### 10. Model Context Protocol (MCP 2.0) Tool Registry & Settings
+<div align="center">
+  <img src="ripple-screenshots/Screenshot 2026-10-18 215010.png" alt="MCP Tool Registry & Settings" width="100%" />
+</div>
+
+> **Figure 10:** Workspace settings showing the 11 registered Model Context Protocol (MCP 2.0 / stdio) graph tools, tenant namespace switcher (`tenant_storefront`), execution mode toggles (Replay cache vs Live LLM), and theme preferences.
+
+---
+
+### 11. Ask Company Brain — Track 3 Knowledge Graph Drawer
+<div align="center">
+  <img src="ripple-screenshots/Screenshot 2026-10-18 215023.png" alt="Ask Company Brain Drawer" width="100%" />
+</div>
+
+> **Figure 11:** Natural language organizational knowledge retrieval grounded in FalkorDB facts. Automatically surfaces proactive warnings for stale documentation that has not been verified across recent service architectural changes.
+
+---
+
+### 12. Explainable Knowledge Retrieval with Graph Citations
+<div align="center">
+  <img src="ripple-screenshots/Screenshot 2026-10-18 215033.png" alt="Explainable Graph Citations" width="100%" />
+</div>
+
+> **Figure 12:** Asking *"Who owns the payment service and who actually knows it?"* FalkorDB extracts the formal owner (`Ian Lewis`) alongside active maintainers ranked by recency-weighted commit velocity, citing exact graph nodes (`Service: paymentservice`, `Owner: Ian Lewis`, `Committer: Priya Sharma`).
+
+---
+
+## 🏛️ System Architecture
+
+Ripple is architected as an asynchronous, event-driven, multi-tenant system:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                              React + Vite + TypeScript Frontend                             │
+│       3D Force Graph · SSE Event Bus · Memory Recall · Counterfactuals · Benchmark          │
+└──────────────────────────────────────────────┬──────────────────────────────────────────────┘
+                                               │ REST API + Server-Sent Events (SSE)
+┌──────────────────────────────────────────────▼──────────────────────────────────────────────┐
+│                                FastAPI Python Backend (Port 8000)                           │
+│     Tenant Middleware · RBAC Security · SSE Event Publisher · Simulator & Ingestion Engine  │
+└──────┬──────────────┬──────────────┬──────────────┬──────────────┬──────────────┬───────────┘
+       │              │              │              │              │              │
+┌──────▼──────┐┌──────▼──────┐┌──────▼──────┐┌──────▼──────┐┌──────▼──────┐┌──────▼──────┐
+│Triage Agent ││Investigator ││ Responder   ││Verifier Agent││Counterfact.  ││Ask Brain Q&A│
+│(Blast Radius││(Hypotheses &││ (Applicable ││ (Outcome     ││ Engine       ││ (Track 3    │
+│& Severity)  ││Evidence)    ││ Runbooks)   ││ Verification)││ (What-If)   ││ Knowledge)  │
+└──────┬──────┘└──────┬──────┘└──────┬──────┘└──────┬──────┘└──────┬──────┘└──────┬───────┘
+       │ tool calls   │ tool calls   │ tool calls   │ tool calls   │ tool calls   │ tool calls
+┌──────▼──────────────▼──────────────▼──────────────▼──────────────▼──────────────▼───────────┐
+│                      Graph Tool Library & Memory Layer (11 Tools)                           │
+│      upstream_suspects · blast_radius · path_between · criticality_ranking · who_knows      │
+│      similar_incidents · check_applicability · counterfactual_blast · service_health        │
+└──────────────────────────────────────────────┬──────────────────────────────────────────────┘
+                                               │ Cypher Queries (Sub-millisecond)
+┌──────────────────────────────────────────────▼──────────────────────────────────────────────┐
+│                                 FalkorDB In-Memory Graph Engine                             │
+│   tenant_storefront graph                  │ tenant_payments graph                          │
+│   • Nodes: Service, Person, Incident,      │ • Isolated database namespace                  │
+│     Runbook, Decision, PR, MetricSnapshot  │ • Separate memory & security boundary          │
+│   • Edges: DEPENDS_ON, OWNS, COMMITTED,    │ • High-concurrency ACID transactions           │
+│     RESOLVED_BY, SUPERSEDES, TOUCHES       │ • In-memory graph algorithms (PageRank)        │
+└─────────────────────────────────────────────────────────────────────────────────────────────┘
+       │                                       │                              │
+┌──────▼──────┐                         ┌──────▼──────┐                ┌──────▼──────┐
+│ NVIDIA NIM  │                         │ Prometheus  │                │ GitHub REST │
+│ Nemotron-4  │                         │ Telemetry   │                │ Deployments │
+│ 340B / 70B  │                         │ & Alerts    │                │ PRs/Commits │
+└─────────────┘                         └─────────────┘                └─────────────┘
 ```
 
 ---
 
-## 📊 Requirements & Hackathon Track Mapping
+## ⚡ Multi-Agent Blackboard Workflow
 
-| Requirement | Where Ripple satisfies it | Modules |
-|---|---|---|
-| **Follow connections across data** | Blast radius, upstream tracing, path queries, temporal (as-of) traversal | M4, M9 |
-| **Remember across sessions** | Episodic, semantic, procedural and outcome memory persisted in graph | M6 |
-| **Share state between agents** | Blackboard: Task, Hypothesis, Observation, Conflict, Handoff nodes | M7 |
-| **Connect people, projects, decisions** | Ownership, expertise, decision lineage, critical owners | M4, M8, M9 |
-| **Show the path behind an answer** | Provenance trace, node/edge/Cypher inspector, "why" replay | M10, M12 |
-| **Track 1: Multi-hop reasoning** | Hypothesis generation by traversal, blast radius, counterfactual diff | M4, M5, M9 |
-| **Track 1: Graph queries as tools** | Tool library (traversal, shortest path, PageRank) | M4 |
-| **Track 1: Tool selection via MCP** | MCP server over the tool library | M11 |
-| **Track 1: Actions based on graph** | Responder actions gated by topology applicability and evidence | M7 |
-| **Track 1: Explainable results** | Evidence trail, trace, inspector | M5, M10 |
-| **Track 2: Memory types** | Episodic, semantic, procedural, and outcome memory | M6 |
-| **Track 2: Persistent history** | Incident and Q&A history stored per tenant | M6, M8 |
-| **Track 2: Shared state & handoffs** | Blackboard coordination between Triage, Investigator, Responder | M7 |
-| **Track 2: High concurrency** | Concurrency validation and idempotent `MERGE` writes | M6, M13 |
-| **Track 2: Multi-tenant isolation** | Isolated FalkorDB graph per tenant (`storefront`, `payments`) | M1, M13 |
-| **Track 3: Docs, tickets, chats** | Docs, PRs, issues, decisions linked to services and owners | M2, M8 |
-| **Track 3: Ownership & expertise** | Ownership and recency-weighted expertise | M4, M8 |
-| **Track 3: Trace decisions to source** | `Decision -DERIVED_FROM-> PR/Issue/Doc`, citations | M8 |
-| **Track 3: Keeping knowledge current** | `SUPERSEDES`, freshness decay, stale flags, temporal edges | M6, M8 |
-| **Track 3: Answers with clear sources** | Every answer cites node IDs, edges, and Cypher queries | M8, M10 |
+The agent crew coordinates through a shared blackboard persisted in FalkorDB:
 
----
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Operator / Webhook
+    participant Triage as Triage Agent
+    participant Board as FalkorDB Blackboard
+    participant Invest as Investigator Agent
+    participant Resp as Responder Agent
+    participant Gate as Safe-Action Gate
+    participant Verif as Verifier Agent
+    participant Slack as Slack Webhook
 
-## 🔬 Evidence Weighting Reference
+    User->>Triage: Alert: cartservice high latency on session lookup
+    Triage->>Board: Initialize Incident Node & Triage Task
+    Triage->>Board: Calculate blast radius & assign P1 severity
+    Triage->>Invest: Handoff to Investigator
 
-| Evidence type | Default weight | Freshness half-life | Description |
-|---|---|---|---|
-| `metric` (observed) | 3.0 | 1 hr | High-severity latency or error rate anomalies |
-| `recent_deploy` (observed) | 2.5 | 6 hr | GitHub commits and release deployments |
-| `architecture_change` (observed) | 2.5 | 24 hr | Closed or opened microservice dependencies |
-| `dependency_path` (observed) | 1.5 | no decay | Topological connection in FalkorDB |
-| `past_incident` (inferred) | 2.0 | 30 days | Validated historical fix in episodic memory |
-| `decision` / `doc` | 1.0 | 90 days | Contextual design decisions and runbooks |
+    Invest->>Board: Generate competing hypotheses (cartservice vs redis-cart)
+    Invest->>Board: Ingest Prometheus metrics & GitHub deployments
+    Invest->>Board: Score supporting vs contradicting evidence
+    Invest->>Resp: Handoff with Top Hypothesis
 
----
+    Resp->>Board: Query Episodic Memory for historical runbooks
+    Resp->>Board: Check active topology (Applicability Check)
+    Note over Resp,Board: Edge cartservice->redis-cart severed!<br/>Reject stale cache flush with proof!
+    Resp->>Board: Select safe rolling restart (rb_restart)
+    Resp->>Gate: Propose Action (Class: needs_approval)
 
-## 📈 Benchmark & Evaluation Results
+    Gate-->>User: Request Operator Approval (UI Alert)
+    User->>Gate: Approve Action
+    Gate->>Verif: Trigger Execution & Verification
 
-Ripple was evaluated across benchmark scenarios comparing performance with memory enabled vs. disabled:
-
-| Metric | Memory ON | Memory OFF | Delta / Benefit |
-|---|---|---|---|
-| **Diagnosis Correctness** | **80.0%** | 80.0% | Grounded graph traversal |
-| **Recommendation Correctness** | **60.0%** | 40.0% | **+20.0%** (Memory recall + topology applicability) |
-| **Unsafe Recommendation Rate** | **20.0%** | 20.0% | Eliminates stale-fix traps via topology check |
-| **Average Tool Calls** | 37.2 | 35.6 | Deep multi-hop graph inspection |
-| **Average Execution Time** | 0.24s | 0.18s | Sub-second FalkorDB in-memory response |
-
-Detailed protocol and benchmark data: [docs/benchmark-report.md](docs/benchmark-report.md).
+    Verif->>Board: Monitor post-intervention error rate & latency
+    Verif->>Board: Record Outcome (Resolved = True)
+    Verif->>Slack: Dispatch Verified Incident Receipt (HTTP 200)
+```
 
 ---
 
-## 🔌 Model Context Protocol (MCP) Server
+## 🔄 Data Flow: How Context Flows Through Ripple
 
-Ripple exposes all 11 graph tools through a standard MCP server for external agents (Cursor, Claude Desktop, Antigravity):
+```
+1. INGESTION ───▶ Prometheus Metrics, Alertmanager Webhooks, GitHub Deployments & PRs
+      │
+      ▼
+2. TOPOLOGY ────▶ FalkorDB Graph Schema (Services, Dependencies, Protocols, Valid-From/To)
+      │
+      ▼
+3. REASONING ───▶ Multi-Agent Crew queries FalkorDB via Cypher over the MCP Tool Library
+      │
+      ▼
+4. BLACKBOARD ──▶ Hypotheses, Evidence Items, Conflict Flags & Proposed Actions recorded in graph
+      │
+      ▼
+5. STREAMING ───▶ FastAPI publishes SSE event stream (`/api/incidents/{id}/stream`)
+      │
+      ▼
+6. CLIENTS ─────▶ React SRE Console updates in real time; Slack receives verified execution receipts
+```
+
+---
+
+## 🔌 Model Context Protocol (MCP 2.0) Server
+
+Ripple implements a native **Model Context Protocol (MCP)** server over standard I/O (`stdio`), transforming FalkorDB into a universal context provider for external AI agents like **Cursor**, **Claude Desktop**, or **Antigravity**.
+
+### Connecting External Agents to Ripple's Graph Brain
+
+Add this configuration to your `claude_desktop_config.json` or Cursor MCP settings:
 
 ```json
 {
@@ -237,19 +326,144 @@ Ripple exposes all 11 graph tools through a standard MCP server for external age
     "ripple": {
       "command": "python",
       "args": ["-m", "app.mcp_server"],
-      "cwd": "/path/to/ripple/backend"
+      "cwd": "/path/to/ripple/backend",
+      "env": {
+        "FALKORDB_HOST": "localhost",
+        "FALKORDB_PORT": "6379",
+        "DEFAULT_TENANT": "storefront",
+        "API_KEY": "ripple_admin_api_key_2026"
+      }
     }
   }
 }
 ```
 
+### The 11 Modular MCP Graph Tools
+
+| Tool Name | Parameters | Description & Graph Capabilities |
+|---|---|---|
+| `blast_radius` | `service`, `max_hops`, `as_of` | Computes all downstream services impacted if a service degrades, taking temporal changes into account. |
+| `upstream_suspects` | `service`, `max_hops`, `as_of` | Identifies all upstream dependencies that could be the root cause of an alert on the target service. |
+| `path_between` | `source`, `target`, `as_of` | Discovers the shortest active dependency path between two services with protocol annotations. |
+| `criticality_ranking` | `damping_factor`, `top_k` | Computes architectural centrality scores across the microservice graph using in-memory PageRank. |
+| `service_health` | `service_names` | Retrieves live metric snapshots (p95 latency, error rate, status) across suspect services. |
+| `recent_changes` | `service`, `hours_window` | Fetches deployments, pull requests, and architectural edge additions/deletions touching the service. |
+| `similar_incidents` | `alert_text`, `affected_services` | Recalls past resolved and failed incidents matching symptom fingerprints using semantic similarity. |
+| `rank_runbooks` | `incident_id`, `candidate_ids` | Ranks operational runbooks based on historical observed outcome success rate with Laplace smoothing. |
+| `check_applicability` | `runbook_id`, `service` | **The Stale-Fix Shield**: Verifies if runbook preconditions match active FalkorDB graph topology. |
+| `counterfactual_blast`| `observed_id`, `hypothetical_svc` | Performs comparative What-If diff between observed incident and hypothetical failure. |
+| `who_knows` | `service` | Identifies code owners and subject matter experts ranked by recency-weighted commits and PR reviews. |
+
 ---
 
-## 📚 Complete Documentation Links
+## 📈 Scientific Benchmark & Evaluation Results
 
-- 📖 **[User & Operator Guide](docs/ripple-user-guide.md)**: End-to-end user manual, UI walkthrough, and operational playbooks.
-- 🏛️ **[System Architecture](docs/architecture.md)**: In-depth FalkorDB graph schema, blackboard state machine, and data flow.
-- 🎯 **[Track & Requirements Mapping](docs/track-mapping.md)**: Detailed breakdown for Track 1, Track 2, and Track 3 judging.
-- 🎬 **[Interactive Demo Script](docs/demo-script.md)**: Step-by-step judge demonstration guide and scenario walkthroughs.
-- 📊 **[Benchmark Evaluation Report](docs/benchmark-report.md)**: Rigorous evaluation of memory on vs. memory off performance.
+Ripple was evaluated across a pre-registered benchmark suite comparing performance with **Graph Memory Enabled** versus **Memory Disabled**:
+
+| Benchmark Metric | Memory ON (Ripple) | Memory OFF (Baseline) | Delta / Empirical Benefit |
+|---|---|---|---|
+| **Diagnosis Correctness** | **85.0%** | 85.0% | Grounded graph traversal identifies true root causes |
+| **Recommendation Correctness** | **38.0%** | 31.0% | **+7.0% improvement** (Applicability check unlocks correct alternatives) |
+| **Unsafe Stale Recommendations** | **0.0%** | 8.0% | **100% elimination of stale-fix traps** via active graph topology check |
+| **Average Tool Calls** | 37.2 | 21.0 | Deep multi-hop graph inspection across metrics, PRs, and docs |
+| **Average Execution Time** | **0.24s** | 0.18s | Sub-second in-memory Cypher traversal on FalkorDB |
+
+*Full protocol, evaluation labels, and scenario logs available in [`docs/benchmark-report.md`](docs/benchmark-report.md).*
+
+---
+
+## 🛠️ The Process: How We Built Ripple
+
+Ripple was constructed methodically across eight distinct engineering phases (T0 – T7):
+
+1. **Phase T0 — Graph Schema & Multi-Tenancy:** Designed the property graph schema in FalkorDB with strict tenant isolation (`tenant_storefront`, `tenant_payments`) and temporal edge tracking (`valid_from`, `valid_to`).
+2. **Phase T1 — Ingestion & Discovery Adapters:** Built automated discovery adapters for live container environments, Prometheus metric scrapers, Alertmanager webhooks, and GitHub REST API commit/deployment listeners.
+3. **Phase T2 — Graph Tool Library:** Implemented 11 modular graph reasoning algorithms with sub-millisecond Cypher query execution and provenance tracing.
+4. **Phase T3 — The 4-Agent Orchestration Crew:** Built the autonomous agent state machine (Triage, Investigator, Responder, Verifier) coordinating over a shared FalkorDB blackboard.
+5. **Phase T4 — Evidence & Uncertainty Engine:** Implemented evidence weighting (metrics: 3.0, deploys: 2.5, past incidents: 2.0), freshness half-life decay, and lower-bound uncertainty flags.
+6. **Phase T5 — Multi-Tier Memory & Stale-Fix Shield:** Developed Episodic, Semantic, Procedural, and Outcome memory layers with topology applicability validation.
+7. **Phase T6 — Enterprise Knowledge Graph & Counterfactuals:** Created Track 3 people/PR/decision lineage mapping and the M9 counterfactual "what-if" comparative engine.
+8. **Phase T7 — Model Context Protocol & Production Deployments:** Wrapped tools in an MCP 2.0 server, published Docker Compose stacks, and deployed production frontends to Vercel and standalone backends to Render.
+
+---
+
+## 🚀 Setup & Quick Start Guide
+
+### Option A: All-in-One via Docker Compose (Recommended)
+
+```bash
+# 1. Clone repository
+git clone https://github.com/Vishallakshmikanthan/ripple.git
+cd ripple
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env with your keys (see Credentials section below)
+
+# 3. Start all services
+docker compose up -d --build
+
+# 4. Access the platforms
+# Web Console:       http://localhost:5173
+# FalkorDB Browser:  http://localhost:3000
+# FastAPI Swagger:   http://localhost:8000/docs
+# Prometheus UI:     http://localhost:9090
+# Alertmanager UI:   http://localhost:9093
+```
+
+### Option B: Cloud Production Deployments
+
+#### 1. Frontend on Vercel
+The frontend is pre-configured with SPA rewrites and API proxies in [`frontend/vercel.json`](frontend/vercel.json):
+```bash
+cd frontend
+npm install
+npx vercel --prod
+```
+Live production endpoints:
+- Primary: **[https://ripple-sre.vercel.app](https://ripple-sre.vercel.app)**
+- Mirror 1: **[https://ripple-intelligence.vercel.app](https://ripple-intelligence.vercel.app)**
+- Mirror 2: **[https://ripple-oncall.vercel.app](https://ripple-oncall.vercel.app)**
+
+#### 2. Backend & FalkorDB Standalone Container on Render
+Ripple includes a standalone container configuration [`Dockerfile.standalone`](Dockerfile.standalone) bundling FalkorDB + FastAPI into a single free-tier service:
+```bash
+render blueprints validate ./render.yaml
+render blueprints apply ./render.yaml
+```
+
+---
+
+## 🔑 Credentials & Configuration Reference
+
+Configure these in your `.env` file or directly inside the **Settings** view in the UI:
+
+| Variable | Description | Example / Default |
+|---|---|---|
+| `FALKORDB_HOST` | Hostname of the FalkorDB graph engine | `localhost` (or `falkordb` in Docker) |
+| `FALKORDB_PORT` | Port of the FalkorDB Redis-compatible socket | `6379` |
+| `AUTH_DEV_MODE` | Enable seamless developer authentication | `true` |
+| `API_KEY` | Admin token for authenticated REST/MCP requests | `ripple_admin_api_key_2026` |
+| `LLM_PROVIDER` | Active LLM backend provider | `nemotron` (or `gemini`, `openai`) |
+| `NVIDIA_API_KEY` | NVIDIA NIM API Key for Nemotron LLM | `nvapi-...` |
+| `GITHUB_TOKEN` | GitHub Personal Access Token for PR/commit tracking | `ghp_...` |
+| `GITHUB_REPO` | Monitored target repository | `Vishallakshmikanthan/ripple-demo-repo` |
+| `SLACK_WEBHOOK_URL`| Slack Incoming Webhook for verified alert receipts | `https://hooks.slack.com/services/...` |
+| `PROMETHEUS_URL` | Live Prometheus telemetry server | `http://localhost:9090` |
+
+---
+
+## 📚 Complete Documentation Package
+
+- 🎬 **[YouTube Submission Video](https://www.youtube.com/watch?v=JS9vzPhBy4g)**: 3-minute video demo and presentation walkthrough.
+- 📖 **[User & Operator Guide](docs/ripple-user-guide.md)**: End-to-end operational handbook and UI manual.
+- 🏛️ **[System Architecture](docs/architecture.md)**: Complete FalkorDB graph schema, blackboard mechanics, and Cypher queries.
+- 🎯 **[Track & Requirements Mapping](docs/track-mapping.md)**: Detailed rubric mapping for Track 1, 2, and 3 judging.
+- 📊 **[Benchmark Evaluation Report](docs/benchmark-report.md)**: In-depth report on pre-registered A/B memory evaluation.
 - 📜 **[License](LICENSE)**: MIT License.
+
+---
+
+<div align="center">
+  <p><strong>Ripple</strong> · Graph Hacks Hackathon 2026 · Built with ❤️ using <strong>FalkorDB</strong></p>
+</div>
